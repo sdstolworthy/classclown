@@ -1,5 +1,5 @@
 from ._step import PipelineStep
-from classclown.classifieds.models import Classified
+from classifieds.models import Classified
 from typing import List
 
 

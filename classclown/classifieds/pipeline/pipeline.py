@@ -1,8 +1,8 @@
 from .steps import search, save_results
-from classclown.classifieds.search_params import ClassifiedSearchParams
-from classclown.search_modules.barnstormers import BarnstormersClassifieds
-from classclown.search_modules.tap import TradeAPlane
-from classclown.search_modules.craigslist import Craigslist
+from classifieds.search_params import ClassifiedSearchParams
+from classifieds.search_modules.barnstormers import Barnstormers
+from classifieds.search_modules.tap import TradeAPlane
+from classifieds.search_modules.craigslist import Craigslist
 
 import time
 
@@ -11,7 +11,7 @@ class ClassifiedSearchPipeline:
     search_filter = ClassifiedSearchParams(price_gte=20000, price_lte=40000)
     pipeline = [
         search.Search(
-            BarnstormersClassifieds(), search_filter, name="Barnstormer Search"
+            Barnstormers(), search_filter, name="Barnstormer Search"
         ),
         search.Search(Craigslist(), search_filter, name="Craigslist Search"),
         search.Search(

@@ -2,8 +2,8 @@ from typing import Text
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
-from classclown.classifieds.search_params import ClassifiedSearchParams
-from classclown.classifieds.classified import Classified
+from classifieds.search_params import ClassifiedSearchParams
+from classifieds.classified import Classified
 
 
 class TradeAPlaneSearchParams:

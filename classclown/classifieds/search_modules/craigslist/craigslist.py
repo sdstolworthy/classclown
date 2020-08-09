@@ -1,9 +1,10 @@
-from classclown.classifieds.search_params import ClassifiedSearchParams
-from classclown.classifieds.classified import Classified
+from classifieds.search_params import ClassifiedSearchParams
+from classifieds.classified import Classified
 from craigslist import CraigslistForSale
 import time
 import re
 import progressbar
+import os
 
 
 class CraigslistSearchParams:
@@ -22,7 +23,8 @@ class Craigslist(object):
 
     def __init__(self):
         with open(
-            "classifieds/repositories/classified/craigslist_repository/cities.txt", "r"
+            os.path.join(os.path.dirname(
+                os.path.realpath(__file__)), "./cities.dat"), "r"
         ) as city_file:
             for l in city_file:
                 self.cities.append(l.rstrip())

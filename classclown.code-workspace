@@ -6,7 +6,7 @@
     }
   ],
   "settings": {
-    "python.pythonPath": "/home/spencer/Projects/classclown/env/bin/python",
+    "python.pythonPath": "/home/spencer/Projects/classclown/.env/bin/python",
     "editor.tabSize": 4
   },
   "extensions": {

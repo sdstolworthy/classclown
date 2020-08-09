@@ -2,8 +2,8 @@ from typing import Text
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
-from classclown.classifieds.search_params import ClassifiedSearchParams
-from classclown.classifieds.classified import Classified
+from classifieds.search_params import ClassifiedSearchParams
+from classifieds.classified import Classified
 
 
 class BarnstormerSearchParams:
@@ -35,11 +35,8 @@ class BarnstormersClassifiedListing:
         return "Barnstormers: Listing: {} for {}".format(self.price, self.title)
 
 
-class BarnstormersClassifieds:
-    base_url = ""
-
-    def __init__(self, base_url=""):
-        self.base_url = base_url
+class Barnstormers:
+    base_url = "https://barnstormers.com"
 
     def __get_search_url(
         self, search_params: BarnstormerSearchParams = BarnstormerSearchParams()
@@ -118,9 +115,3 @@ class BarnstormersClassifieds:
             airplane for airplane in serialized_classifieds if airplane is not None
         ]
         return classifieds
-
-
-class Barnstormers:
-    base_url = "https://barnstormers.com"
-    classifieds: BarnstormersClassifieds = BarnstormersClassifieds(
-        base_url=base_url)

@@ -1,29 +1,25 @@
 from ._step import PipelineStep
-from classclown.classifieds.models import Classified
+from classifieds.models import Classified
+from classifieds.search_params import ClassifiedSearchParams
 from typing import List
-from classifieds.repositories.classified.classified_repository import (
-    ClassifiedRepository,
-    ClassifiedSearchParams,
-)
 
 
 class Search(PipelineStep):
-    classified_repository: ClassifiedRepository
+    search_module = None
     search_params = None
 
     def __init__(
         self,
-        classified_repository: ClassifiedRepository,
+        search_module,
         search_params=ClassifiedSearchParams(),
         name="",
     ):
-        if classified_repository is None:
+        if search_module is None:
             raise ValueError("Classified Repository must not be null")
-        self.classified_repository = classified_repository
+        self.search_module = search_module
         self.search_params = search_params
         super().__init__(name)
 
     def execute(self, _) -> List[Classified]:
-        classifieds = self.classified_repository.search(self.search_params)
+        classifieds = self.search_module.search(self.search_params)
         return classifieds
-

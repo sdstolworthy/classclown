@@ -1,4 +1,4 @@
-from classclown.classifieds.models.classified import Classified
+from classifieds.models.classified import Classified
 
 
 class PipelineStep:
