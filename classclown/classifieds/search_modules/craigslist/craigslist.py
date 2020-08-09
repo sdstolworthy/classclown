@@ -71,7 +71,7 @@ class Craigslist(object):
         )
         listing_results = []
         with progressbar.ProgressBar(max_value=len(self.cities)) as bar:
-            for city in self.cities:
+            for city in self.cities[:1]:
                 time.sleep(1)
                 current_results = [
                     Craigslist.__craigslist_listing_to_airclassified(listing)

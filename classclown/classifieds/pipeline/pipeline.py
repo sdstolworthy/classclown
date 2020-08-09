@@ -16,7 +16,7 @@ class ClassifiedSearchPipeline:
         search.Search(
             TradeAPlane(), search_filter, name="TradeAClassified Search"
         ),
-        save_results
+        save_results.SaveStep()
     ]
 
     def run(self):

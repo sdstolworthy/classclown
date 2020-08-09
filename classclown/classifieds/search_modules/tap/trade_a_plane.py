@@ -42,7 +42,7 @@ class TradeAPlaneListing:
 
 
 class TradeAPlane:
-    base_url = "https://trade-a-classified.com"
+    base_url = "https://trade-a-plane.com"
 
     def __classified_to_airplane(self, classified: TradeAPlaneListing):
         return Classified(
@@ -52,7 +52,7 @@ class TradeAPlane:
             url=classified.url,
         )
 
-    def __classified_search_params_to_barnstormer_params(
+    def __classified_search_params_to_tap_params(
         self, search_param: ClassifiedSearchParams = ClassifiedSearchParams()
     ):
         return TradeAPlaneSearchParams(
@@ -93,12 +93,11 @@ class TradeAPlane:
         return page_results, next_link
 
     def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
-        barnstormer_search_params = self.__classified_search_params_to_barnstormer_params(
+        tap_search_params = self.__classified_search_params_to_tap_params(
             search_params
         )
-        classifieds = TradeAPlane().search(barnstormer_search_params)
-
-        next_link = self.__get_search_url(search_params=search_params)
+        next_link = self.__get_search_url(
+            search_params=tap_search_params)
         found_listings = []
         prev_link = ''
         while next_link is not None and next_link != prev_link:
