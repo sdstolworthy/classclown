@@ -1,1 +1,1 @@
-# Fishfinder finds planes
+# Class Clown searches classifieds
