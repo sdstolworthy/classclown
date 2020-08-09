@@ -2,6 +2,7 @@ from typing import Text
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
+from classclown.classifieds.repositories.classified
 
 
 class BarnstormerSearchParams:

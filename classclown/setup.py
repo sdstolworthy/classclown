@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.1",
     author="sdstolworthy",
     author_email="sdstolworthy@gmail.com",
-    description="A simple application to find a cheap plane",
+    description="A simple application to find a cheap classified",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/sdstolworthy/classclown",

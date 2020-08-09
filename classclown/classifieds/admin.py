@@ -25,7 +25,7 @@ class PriceFilter(SimpleListFilter):
 
 
 @admin.register(Classified)
-class PlaneAdmin(admin.ModelAdmin):
+class ClassifiedAdmin(admin.ModelAdmin):
     list_display = ["title", "price", "url", "created_at"]
     search_fields = (
         "title",

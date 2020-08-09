@@ -1,7 +1,7 @@
 from typing import Text
 
 
-class PlaneSearchParams:
+class ClassifiedSearchParams:
     def __init__(self, price_gte=None, price_lte=None, title=""):
         self.price_gte = price_gte
         self.price_lte = price_lte
@@ -12,6 +12,6 @@ class PlaneSearchParams:
     title: Text
 
 
-class PlaneRepository(object):
-    def search(self, search_params: PlaneSearchParams):
+class ClassifiedRepository(object):
+    def search(self, search_params: ClassifiedSearchParams):
         raise NotImplementedError()

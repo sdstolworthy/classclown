@@ -1,4 +1,4 @@
-from ..plane_repository import PlaneSearchParams, PlaneRepository
+from ..classified_repository import ClassifiedSearchParams, ClassifiedRepository
 from django.db import IntegrityError
 from classclown.classifieds.models import Classified
 from craigslist import CraigslistForSale
@@ -18,12 +18,12 @@ class CraigslistSearchParams:
     max_price = None
 
 
-class Craigslist(PlaneRepository):
+class Craigslist(ClassifiedRepository):
     cities = []
 
     def __init__(self):
         with open(
-            "classifieds/repositories/plane/craigslist_repository/cities.txt", "r"
+            "classifieds/repositories/classified/craigslist_repository/cities.txt", "r"
         ) as city_file:
             for l in city_file:
                 self.cities.append(l.rstrip())
@@ -46,17 +46,17 @@ class Craigslist(PlaneRepository):
             return []
 
     @staticmethod
-    def __plane_search_params_to_craigslist_params(
-        plane_search_params: PlaneSearchParams,
+    def __classified_search_params_to_craigslist_params(
+        classified_search_params: ClassifiedSearchParams,
     ):
         return CraigslistSearchParams(
-            min_price=plane_search_params.price_gte,
-            max_price=plane_search_params.price_lte,
-            title=plane_search_params.title,
+            min_price=classified_search_params.price_gte,
+            max_price=classified_search_params.price_lte,
+            title=classified_search_params.title,
         )
 
     @staticmethod
-    def __craigslist_listing_to_airplane(listing):
+    def __craigslist_listing_to_airclassified(listing):
         try:
             return Classified.objects.create(
                 url=listing["url"],
@@ -67,8 +67,8 @@ class Craigslist(PlaneRepository):
         except IntegrityError:
             pass
 
-    def search(self, search_params: PlaneSearchParams = PlaneSearchParams()):
-        craigslist_params = Craigslist.__plane_search_params_to_craigslist_params(
+    def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
+        craigslist_params = Craigslist.__classified_search_params_to_craigslist_params(
             search_params
         )
         listing_results = []
@@ -76,7 +76,7 @@ class Craigslist(PlaneRepository):
             for city in self.cities:
                 time.sleep(1)
                 current_results = [
-                    Craigslist.__craigslist_listing_to_airplane(listing)
+                    Craigslist.__craigslist_listing_to_airclassified(listing)
                     for listing in self.__get_listings_for_city(city, craigslist_params)
                 ]
                 listing_results = listing_results + current_results

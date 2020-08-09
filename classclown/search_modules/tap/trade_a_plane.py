@@ -4,7 +4,7 @@ import requests
 import re
 
 
-class TradeAPlaneSearchParams:
+class TradeAClassifiedSearchParams:
     keyword: Text
     max_price: int
     min_price: int
@@ -15,7 +15,7 @@ class TradeAPlaneSearchParams:
         self.title = keyword
 
 
-class TradeAPlaneListing:
+class TradeAClassifiedListing:
     title: Text = ""
     price: float = None
     description: Text = ""
@@ -29,20 +29,20 @@ class TradeAPlaneListing:
 
     @staticmethod
     def faked():
-        listing = TradeAPlaneListing()
+        listing = TradeAClassifiedListing()
         listing.title = "Faked Classified Title"
         listing.description = "Faked Classified Description"
         listing.price = 10000
         return listing
 
     def __str__(self):
-        return "Trade-A-Plane: Listing: ${} for {}".format(self.price, self.title)
+        return "Trade-A-Classified: Listing: ${} for {}".format(self.price, self.title)
 
 
-class TradeAPlane:
-    base_url = "https://trade-a-plane.com"
+class TradeAClassified:
+    base_url = "https://trade-a-classified.com"
 
-    def __get_search_url(self, search_params: TradeAPlaneSearchParams = TradeAPlaneSearchParams()):
+    def __get_search_url(self, search_params: TradeAClassifiedSearchParams = TradeAClassifiedSearchParams()):
         base_search_url = self.base_url + '/filtered/search?s-type=aircraft&s-advanced=yes&sale_status=For+Sale&category_level1=Single+Engine+Piston&price-min={min_price}&price-max={max_price}&user_distance=1000000'.format(
             max_price=search_params.max_price if search_params.max_price is not None else '',
             min_price=search_params.min_price if search_params.min_price is not None else ''
@@ -61,7 +61,7 @@ class TradeAPlane:
         url = self.base_url + result_title['href']
         if len(price_text) != 0:
             price = int(price_text)
-        return TradeAPlaneListing(title=result_title.text.strip(), price=price, description=description, url=url)
+        return TradeAClassifiedListing(title=result_title.text.strip(), price=price, description=description, url=url)
 
     def __parse_results_page(self, text):
         soup = BeautifulSoup(text, 'html.parser')
@@ -73,7 +73,7 @@ class TradeAPlane:
             next_link = self.base_url + next_link['href']
         return page_results, next_link
 
-    def search(self, search_params: TradeAPlaneSearchParams = TradeAPlaneSearchParams()):
+    def search(self, search_params: TradeAClassifiedSearchParams = TradeAClassifiedSearchParams()):
         next_link = self.__get_search_url(search_params=search_params)
         found_listings = []
         prev_link = ''

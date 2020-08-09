@@ -1,22 +1,22 @@
 from .steps import search, save_results
-from classifieds.repositories.plane import (
-    BarnstormersPlaneRepository,
+from classifieds.repositories.classified import (
+    BarnstormersClassifiedRepository,
     Craigslist,
-    TradeAPlaneRepository,
+    TradeAClassifiedRepository,
 )
-from classifieds.repositories.plane.plane_repository import PlaneSearchParams
+from classifieds.repositories.classified.classified_repository import ClassifiedSearchParams
 import time
 
 
 class ClassifiedSearchPipeline:
-    search_filter = PlaneSearchParams(price_gte=20000, price_lte=40000)
+    search_filter = ClassifiedSearchParams(price_gte=20000, price_lte=40000)
     pipeline = [
         search.Search(
-            BarnstormersPlaneRepository(), search_filter, name="Barnstormer Search"
+            BarnstormersClassifiedRepository(), search_filter, name="Barnstormer Search"
         ),
         search.Search(Craigslist(), search_filter, name="Craigslist Search"),
         search.Search(
-            TradeAPlaneRepository(), search_filter, name="TradeAPlane Search"
+            TradeAClassifiedRepository(), search_filter, name="TradeAClassified Search"
         ),
     ]
 
@@ -44,7 +44,7 @@ class ClassifiedSearchPipeline:
         print(
             "Found {} {} in {} seconds".format(
                 len(running_results),
-                "classifieds" if len(running_results) != 1 else "plane",
+                "classifieds" if len(running_results) != 1 else "classified",
                 round(pipeline_end_time - pipeline_start_time),
             ),
         )
