@@ -9,5 +9,5 @@ class SaveStep(PipelineStep):
 
     def execute(self, previous_results: List[Classified]):
         for result in previous_results:
-            result.save()
+            Classified.save_classified(result)
         return previous_results

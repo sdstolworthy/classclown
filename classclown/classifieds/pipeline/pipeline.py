@@ -3,7 +3,6 @@ from classifieds.search_params import ClassifiedSearchParams
 from classifieds.search_modules.barnstormers import Barnstormers
 from classifieds.search_modules.tap import TradeAPlane
 from classifieds.search_modules.craigslist import Craigslist
-
 import time
 
 
@@ -17,6 +16,7 @@ class ClassifiedSearchPipeline:
         search.Search(
             TradeAPlane(), search_filter, name="TradeAClassified Search"
         ),
+        save_results
     ]
 
     def run(self):
