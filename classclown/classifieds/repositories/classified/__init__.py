@@ -1,3 +1,0 @@
-from .barnstormers_repository import BarnstormersClassifiedRepository
-from .craigslist_repository import Craigslist
-from .trade_a_classified_repository import TradeAClassifiedRepository

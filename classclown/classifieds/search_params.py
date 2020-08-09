@@ -10,8 +10,3 @@ class ClassifiedSearchParams:
     price_gte: int
     price_lte: int
     title: Text
-
-
-class ClassifiedRepository(object):
-    def search(self, search_params: ClassifiedSearchParams):
-        raise NotImplementedError()

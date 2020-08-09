@@ -2,7 +2,8 @@ from typing import Text
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
-from classclown.classifieds.repositories.classified
+from classclown.classifieds.search_params import ClassifiedSearchParams
+from classclown.classifieds.classified import Classified
 
 
 class BarnstormerSearchParams:
@@ -77,10 +78,29 @@ class BarnstormersClassifieds:
                               "a" and "Next Page" in tag.text)
         return page_listings, (self.base_url + next_link["href"]) if next_link is not None else None
 
-    def search(
-        self, search_params: BarnstormerSearchParams = BarnstormerSearchParams()
+    def __classified_to_airplane(self, classified: BarnstormersClassifiedListing):
+        return Classified(
+            price=classified.price,
+            title=classified.title,
+            description=classified.description,
+            url=classified.url,
+        )
+
+    def __classified_search_params_to_barnstormer_params(
+        self, search_param: ClassifiedSearchParams = ClassifiedSearchParams()
     ):
-        next_link = self.__get_search_url(search_params)
+        return BarnstormerSearchParams(
+            keyword=search_param.title,
+            price_gte=search_param.price_gte,
+            price_lte=search_param.price_lte,
+        )
+
+    def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
+        barnstormer_search_params = self.__classified_search_params_to_barnstormer_params(
+            search_params
+        )
+
+        next_link = self.__get_search_url(barnstormer_search_params)
         found_listings = []
         request_count = 0
         while next_link is not None and request_count < 99999:
@@ -90,7 +110,14 @@ class BarnstormersClassifieds:
             if len(listings) == 0:
                 break
             found_listings += listings
-        return found_listings
+        serialized_classifieds = [
+            self.__classified_to_airplane(listing)
+            for listing in found_listings
+        ]
+        classifieds = [
+            airplane for airplane in serialized_classifieds if airplane is not None
+        ]
+        return classifieds
 
 
 class Barnstormers:

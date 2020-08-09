@@ -2,9 +2,11 @@ from typing import Text
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
+from classclown.classifieds.search_params import ClassifiedSearchParams
+from classclown.classifieds.classified import Classified
 
 
-class TradeAClassifiedSearchParams:
+class TradeAPlaneSearchParams:
     keyword: Text
     max_price: int
     min_price: int
@@ -15,7 +17,7 @@ class TradeAClassifiedSearchParams:
         self.title = keyword
 
 
-class TradeAClassifiedListing:
+class TradeAPlaneListing:
     title: Text = ""
     price: float = None
     description: Text = ""
@@ -29,7 +31,7 @@ class TradeAClassifiedListing:
 
     @staticmethod
     def faked():
-        listing = TradeAClassifiedListing()
+        listing = TradeAPlaneListing()
         listing.title = "Faked Classified Title"
         listing.description = "Faked Classified Description"
         listing.price = 10000
@@ -39,10 +41,27 @@ class TradeAClassifiedListing:
         return "Trade-A-Classified: Listing: ${} for {}".format(self.price, self.title)
 
 
-class TradeAClassified:
+class TradeAPlane:
     base_url = "https://trade-a-classified.com"
 
-    def __get_search_url(self, search_params: TradeAClassifiedSearchParams = TradeAClassifiedSearchParams()):
+    def __classified_to_airplane(self, classified: TradeAPlaneListing):
+        return Classified(
+            price=classified.price,
+            title=classified.title,
+            description=classified.description,
+            url=classified.url,
+        )
+
+    def __classified_search_params_to_barnstormer_params(
+        self, search_param: ClassifiedSearchParams = ClassifiedSearchParams()
+    ):
+        return TradeAPlaneSearchParams(
+            keyword=search_param.title,
+            min_price=search_param.price_gte,
+            max_price=search_param.price_lte,
+        )
+
+    def __get_search_url(self, search_params: TradeAPlaneSearchParams = TradeAPlaneSearchParams()):
         base_search_url = self.base_url + '/filtered/search?s-type=aircraft&s-advanced=yes&sale_status=For+Sale&category_level1=Single+Engine+Piston&price-min={min_price}&price-max={max_price}&user_distance=1000000'.format(
             max_price=search_params.max_price if search_params.max_price is not None else '',
             min_price=search_params.min_price if search_params.min_price is not None else ''
@@ -61,7 +80,7 @@ class TradeAClassified:
         url = self.base_url + result_title['href']
         if len(price_text) != 0:
             price = int(price_text)
-        return TradeAClassifiedListing(title=result_title.text.strip(), price=price, description=description, url=url)
+        return TradeAPlaneListing(title=result_title.text.strip(), price=price, description=description, url=url)
 
     def __parse_results_page(self, text):
         soup = BeautifulSoup(text, 'html.parser')
@@ -73,7 +92,12 @@ class TradeAClassified:
             next_link = self.base_url + next_link['href']
         return page_results, next_link
 
-    def search(self, search_params: TradeAClassifiedSearchParams = TradeAClassifiedSearchParams()):
+    def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
+        barnstormer_search_params = self.__classified_search_params_to_barnstormer_params(
+            search_params
+        )
+        classifieds = TradeAPlane().search(barnstormer_search_params)
+
         next_link = self.__get_search_url(search_params=search_params)
         found_listings = []
         prev_link = ''
@@ -82,4 +106,9 @@ class TradeAClassified:
             prev_link = next_link
             listings, next_link = self.__parse_results_page(page.text)
             found_listings += listings
-        return found_listings
+        airplanes = [
+            self.__classified_to_airplane(classified) for classified in found_listings
+        ]
+        classifieds = [
+            airplane for airplane in airplanes if airplane is not None]
+        return classifieds

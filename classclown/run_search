@@ -12,6 +12,6 @@ if __name__ == "__main__":
     import django
 
     django.setup()
-    from classclown.classifieds.search import run
+    from classifieds.search import run
 
     run()

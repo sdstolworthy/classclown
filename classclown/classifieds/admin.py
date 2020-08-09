@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 
-from classclown.classifieds.models import Classified
+from .models import Classified
 
 # Register your models here.
 
@@ -32,4 +32,3 @@ class ClassifiedAdmin(admin.ModelAdmin):
         "description",
     )
     list_filter = [PriceFilter]
-
