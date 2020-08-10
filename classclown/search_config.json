@@ -1,5 +1,7 @@
 {
   "max_price":70000,
   "min_price":60000,
-  "craigslist_category":"ava"
+  "craigslist_category":"ava",
+  "make": ["honda", "toyota"],
+  "model": ["civic"]
 }

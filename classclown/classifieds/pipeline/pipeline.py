@@ -2,20 +2,22 @@ from .steps import search, save_results
 from classifieds.search_modules.barnstormers import Barnstormers
 from classifieds.search_modules.tap import TradeAPlane
 from classifieds.search_modules.craigslist import Craigslist
+from classifieds.search_modules.autotrader.autotrader import Autotrader
 import time
 
 
 class ClassifiedSearchPipeline:
     search_filter = {}
     pipeline = [
-        search.Search(
-            Barnstormers(), search_filter, name="Barnstormer Search"
-        ),
-        search.Search(Craigslist(), search_filter, name="Craigslist Search"),
-        search.Search(
-            TradeAPlane(), search_filter, name="TradeAClassified Search"
-        ),
-        save_results.SaveStep()
+#         search.Search(
+#            Barnstormers(), search_filter, name="Barnstormer Search"
+#        ),
+#        search.Search(Craigslist(), search_filter, name="Craigslist Search"),
+#        search.Search(
+#            TradeAPlane(), search_filter, name="TradeAClassified Search"
+#        ),
+#        save_results.SaveStep()
+        search.Search(Autotrader(), search_filter, name="Autotrader Search")
     ]
 
     def __init__(self, search_params=None) -> None:
