@@ -1,17 +1,20 @@
-from classifieds.search_params import ClassifiedSearchParams
 from classifieds.classified import Classified
 from craigslist import CraigslistForSale
 import time
 import re
 import progressbar
 import os
+from typing import Dict
 
 
 class CraigslistSearchParams:
-    def __init__(self, min_price=None, max_price=None, title=None):
+    def __init__(self, min_price=None, max_price=None, title=None, category=None):
+        assert category is not None and len(
+            category) > 0, ("Craigslist category must not be null")
         self.title = title
         self.min_price = min_price
         self.max_price = max_price
+        self.category = category
 
     title = ""
     min_price = None
@@ -33,7 +36,7 @@ class Craigslist(object):
         try:
             cl = CraigslistForSale(
                 site=city,
-                category="ava",
+                category=search_filter.category,
                 filters={
                     "max_price": search_filter.max_price,
                     "min_price": search_filter.min_price,
@@ -48,16 +51,17 @@ class Craigslist(object):
 
     @staticmethod
     def __classified_search_params_to_craigslist_params(
-        classified_search_params: ClassifiedSearchParams,
-    ):
+        classified_search_params: Dict,
+    ) -> CraigslistSearchParams:
         return CraigslistSearchParams(
-            min_price=classified_search_params.price_gte,
-            max_price=classified_search_params.price_lte,
-            title=classified_search_params.title,
+            category=classified_search_params['craigslist_category'],
+            min_price=classified_search_params.get('min_price'),
+            max_price=classified_search_params.get('max_price'),
+            title=classified_search_params['title'],
         )
 
     @staticmethod
-    def __craigslist_listing_to_airclassified(listing):
+    def __craigslist_listing_to_airplane(listing):
         return Classified(
             url=listing["url"],
             price=int(re.sub("[^0-9]", "", listing["price"])),
@@ -65,7 +69,7 @@ class Craigslist(object):
             description=listing["body"],
         )
 
-    def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
+    def search(self, search_params: Dict = {}):
         craigslist_params = Craigslist.__classified_search_params_to_craigslist_params(
             search_params
         )
@@ -74,7 +78,7 @@ class Craigslist(object):
             for city in self.cities[:1]:
                 time.sleep(1)
                 current_results = [
-                    Craigslist.__craigslist_listing_to_airclassified(listing)
+                    Craigslist.__craigslist_listing_to_airplane(listing)
                     for listing in self.__get_listings_for_city(city, craigslist_params)
                 ]
                 listing_results = listing_results + current_results

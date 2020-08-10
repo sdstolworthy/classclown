@@ -1,6 +1,5 @@
 from ._step import PipelineStep
 from classifieds.models import Classified
-from classifieds.search_params import ClassifiedSearchParams
 from typing import List
 
 
@@ -11,9 +10,10 @@ class Search(PipelineStep):
     def __init__(
         self,
         search_module,
-        search_params=ClassifiedSearchParams(),
+        search_params=None,
         name="",
     ):
+        search_params = search_params if search_params is not None else {}
         if search_module is None:
             raise ValueError("Classified Repository must not be null")
         self.search_module = search_module

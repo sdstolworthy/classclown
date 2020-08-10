@@ -1,8 +1,7 @@
-from typing import Text
+from typing import Text, Dict
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
-from classifieds.search_params import ClassifiedSearchParams
 from classifieds.classified import Classified
 
 
@@ -53,12 +52,12 @@ class TradeAPlane:
         )
 
     def __classified_search_params_to_tap_params(
-        self, search_param: ClassifiedSearchParams = ClassifiedSearchParams()
+        self, search_param:  Dict = {}
     ):
         return TradeAPlaneSearchParams(
-            keyword=search_param.title,
-            min_price=search_param.price_gte,
-            max_price=search_param.price_lte,
+            keyword=search_param['title'],
+            min_price=search_param.get('min_price'),
+            max_price=search_param.get('max_price'),
         )
 
     def __get_search_url(self, search_params: TradeAPlaneSearchParams = TradeAPlaneSearchParams()):
@@ -92,7 +91,7 @@ class TradeAPlane:
             next_link = self.base_url + next_link['href']
         return page_results, next_link
 
-    def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
+    def search(self, search_params: Dict = {}):
         tap_search_params = self.__classified_search_params_to_tap_params(
             search_params
         )

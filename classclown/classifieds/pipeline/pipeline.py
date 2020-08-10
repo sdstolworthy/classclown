@@ -1,5 +1,4 @@
 from .steps import search, save_results
-from classifieds.search_params import ClassifiedSearchParams
 from classifieds.search_modules.barnstormers import Barnstormers
 from classifieds.search_modules.tap import TradeAPlane
 from classifieds.search_modules.craigslist import Craigslist
@@ -7,7 +6,7 @@ import time
 
 
 class ClassifiedSearchPipeline:
-    search_filter = ClassifiedSearchParams(price_gte=20000, price_lte=40000)
+    search_filter = {}
     pipeline = [
         search.Search(
             Barnstormers(), search_filter, name="Barnstormer Search"
@@ -19,8 +18,10 @@ class ClassifiedSearchPipeline:
         save_results.SaveStep()
     ]
 
+    def __init__(self, search_params=None) -> None:
+        self.search_filter = search_params if search_params is not None else {}
+
     def run(self):
-        print("running")
         running_results = []
         pipeline_start_time = time.time()
         for step in self.pipeline:

@@ -2,8 +2,8 @@ from typing import Text
 from bs4 import BeautifulSoup, PageElement
 import requests
 import re
-from classifieds.search_params import ClassifiedSearchParams
 from classifieds.classified import Classified
+from typing import Dict
 
 
 class BarnstormerSearchParams:
@@ -53,10 +53,12 @@ class Barnstormers:
         )
 
     def __serialize_listing(self, listing_element: PageElement):
+        price_element = listing_element.find_next(class_="price")
         title_element = listing_element.find_next(class_="listing_header")
         title = title_element.text
-        price_text = listing_element.find_next(class_="price").text
-        price = int(re.sub("[^0-9]", "", price_text))
+        price_text = price_element.text if price_element is not None else None
+        price = int(re.sub("[^0-9]", "", price_text)
+                    ) if price_text is not None else None
         body = listing_element.find_next(class_="body").text
         listing = BarnstormersClassifiedListing()
         listing.title = title
@@ -84,15 +86,15 @@ class Barnstormers:
         )
 
     def __classified_search_params_to_barnstormer_params(
-        self, search_param: ClassifiedSearchParams = ClassifiedSearchParams()
+        self, search_param: Dict = {}
     ):
         return BarnstormerSearchParams(
-            keyword=search_param.title,
-            price_gte=search_param.price_gte,
-            price_lte=search_param.price_lte,
+            keyword=search_param.get('title'),
+            price_gte=search_param.get('min_price'),
+            price_lte=search_param.get('max_price'),
         )
 
-    def search(self, search_params: ClassifiedSearchParams = ClassifiedSearchParams()):
+    def search(self, search_params: Dict = {}):
         barnstormer_search_params = self.__classified_search_params_to_barnstormer_params(
             search_params
         )
